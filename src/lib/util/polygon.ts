@@ -1,4 +1,11 @@
-import type { Polygon } from '../types';
+import { add, type Vec2 } from './vector';
+
+type Point = {
+	position: Vec2;
+	velocity: Vec2;
+};
+
+export type Polygon = Point[];
 
 export const create =
 	(x: () => number) =>
@@ -7,25 +14,25 @@ export const create =
 		const polygon: Polygon = [];
 		let i = 0;
 		while (i < count) {
-			polygon.push([x(), y()]);
+			polygon.push({ position: [x(), y()], velocity: [0, 0] });
 			i += 1;
 		}
 		return polygon;
 	};
 
-export const toRelative = (polygon: Polygon): Polygon => {
-	const p: Polygon = polygon.slice(0, 1);
-	let i = p.length;
-	while (i < polygon.length) {
-		const [x1, y1] = polygon[i - 1];
-		const [x2, y2] = polygon[i];
-		p.push([x2 - x1, y2 - y1]);
+export const center = (polygon: Polygon): Vec2 => {
+	let c: Vec2 = [0, 0];
+	let i = 0;
+	const { length } = polygon;
+	while (i < length) {
+		c = add(c)(polygon[i].position);
 		i += 1;
 	}
-	return p;
+	return [c[0] / length, c[1] / length];
 };
 
 /**
- * assumes the polygon is defined width relative points
+ * assumes the polygon's points are absolutely positioned
  */
-export const toRelativeString = (polygon: Polygon): string => `m${polygon.join('l')}z`;
+export const toString = (polygon: Polygon): string =>
+	`M${polygon.map(({ position }) => position).join('L')}Z`;

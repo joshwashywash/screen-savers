@@ -35,8 +35,8 @@
 		}
 	}
 
-	let frameId: number;
-	const animate: FrameRequestCallback = () => {
+	let frameId = 0;
+	const animate = () => {
 		for (const polygon of polygons) {
 			for (const point of polygon) {
 				point.position = add(point.position)(point.velocity);
@@ -54,7 +54,7 @@
 
 	$: ds = polygons.map((polygon) => toString(polygon));
 
-	onMount(() => animate(0));
+	onMount(() => animate(frameId));
 	onDestroy(() => {
 		if (browser) window.cancelAnimationFrame(frameId);
 	});

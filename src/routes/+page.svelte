@@ -3,7 +3,6 @@
 	import { random } from '$lib/util/number';
 	import { onDestroy, onMount } from 'svelte';
 	import { add } from '$lib/util/vector';
-	import { browser } from '$app/environment';
 
 	const height = 9;
 	const width = 16;
@@ -35,7 +34,7 @@
 		}
 	}
 
-	let frameId = 0;
+	let frame: number | undefined = undefined;
 	const animate = () => {
 		for (const polygon of polygons) {
 			for (const point of polygon) {
@@ -49,14 +48,15 @@
 			}
 		}
 		polygons = polygons;
-		frameId = window.requestAnimationFrame(animate);
+		frame = window.requestAnimationFrame(animate);
 	};
 
 	$: ds = polygons.map((polygon) => toString(polygon));
+	$: console.log(frame);
 
-	onMount(() => animate(frameId));
+	onMount(animate);
 	onDestroy(() => {
-		if (browser) window.cancelAnimationFrame(frameId);
+		if (frame !== undefined) window.cancelAnimationFrame(frame);
 	});
 </script>
 

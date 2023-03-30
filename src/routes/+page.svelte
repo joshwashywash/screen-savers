@@ -52,7 +52,6 @@
 	};
 
 	$: ds = polygons.map((polygon) => toString(polygon));
-	$: console.log(frame);
 
 	onMount(animate);
 	onDestroy(() => {
